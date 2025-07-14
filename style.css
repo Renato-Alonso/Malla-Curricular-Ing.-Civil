@@ -1,0 +1,65 @@
+body {
+  background-color: #808080; /* Fondo plomo */
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#malla {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.semestre {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 2px solid white;
+  padding-top: 10px;
+}
+
+.semestre::before {
+  content: attr(data-semestre) "° Semestre";
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.ramo {
+  background-color: black;
+  border-radius: 12px;
+  padding: 10px;
+  width: 180px;
+  height: 80px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ramo.tachado::after {
+  content: "";
+  position: absolute;
+  width: 140%; /* menor que 200% */
+  height: 2px;
+  background: red;
+  top: 50%;
+  left: -20%;
+  transform: rotate(45deg);
+}
+
+.ramo.bloqueado {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
