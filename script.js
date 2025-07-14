@@ -48,23 +48,23 @@ const cursos = [
   { codigo: "IN1115C", nombre: "Dinnamica de  Estructuras", semestre: 7, requisitos: ["IN1051C","IN1109C"] },
   
   // VIII SEM
-  { codigo: "ED0022C", nombre: "Inglés II", semestre: 8, requisitos: [] },
-  { codigo: "IN1021C", nombre: "Hidrologia", semestre: 8, requisitos: ["IN1113C"] },
-  { codigo: "IN1116C", nombre: "Ingeniería de Transporte", semestre: 8, requisitos: ["IN1118C"] },
-  { codigo: "IN1117C", nombre: "Construccion  General", semestre: 8, requisitos: ["IN111815C"] },
-  { codigo: "IN1118C", nombre: "Hormigon Armado", semestre: 8, requisitos: ["IN1110C"] },
+  { codigo: "ED0022C", nombre: "Inglés II", semestre: 8, requisitos: ["ED0021C"] },
+  { codigo: "IN1021C", nombre: "Hidrologia", semestre: 8, requisitos: ["IN1114C","IN1062C"] },
+  { codigo: "IN1116C", nombre: "Ingeniería de Transporte", semestre: 8, requisitos: ["IN1063C","EC0001C"] },
+  { codigo: "IN1117C", nombre: "Construccion  General", semestre: 8, requisitos: ["IN1110C"] },
+  { codigo: "IN1118C", nombre: "Hormigon Armado", semestre: 8, requisitos: ["IN1051C"] },
 
   // IX SEM
-  { codigo: "IN1119C", nombre: "Ingenieria  Fluvial y Costera", semestre: 9, requisitos: ["IN1119C"] },
-  { codigo: "IN1120C", nombre: "Fundaciones", semestre: 9, requisitos: ["IN1110C"] },
-  { codigo: "IN1121C", nombre: "Estructuras Metálicas", semestre: 9, requisitos: ["IN1113C"] },
-  { codigo: "INTEI", nombre: "Integracion de Saberes", semestre: 9, requisitos: ["IN1106C"] },
+  { codigo: "IN1119C", nombre: "Ingenieria  Fluvial y Costera", semestre: 9, requisitos: ["IN1114C","IN1111C"] },
+  { codigo: "IN1120C", nombre: "Fundaciones", semestre: 9, requisitos: ["IN1017C"] },
+  { codigo: "IN1121C", nombre: "Estructuras Metálicas", semestre: 9, requisitos: ["IN1051C"] },
+  { codigo: "INTEI", nombre: "Integracion de Saberes", semestre: 9, requisitos: [] },
   { codigo: "OPT1", nombre: "Optativo de Profundización I", semestre: 9, requisitos: [] },
   
   // X SEM
-  { codigo: "IN1033C", nombre: "Ingeniería Económica", semestre: 10, requisitos: ["IN1118C"] },
-  { codigo: "IN1122C", nombre: "Impacto Ambiental en Ingenieria  Civil", semestre: 10, requisitos: ["IN1118C"] },
-  { codigo: "INTE"II, nombre: "Integracion de Saberes", semestre: 10, requisitos: ["IN1106C"] },
+  { codigo: "IN1033C", nombre: "Ingeniería Económica", semestre: 10, requisitos: [] },
+  { codigo: "IN1122C", nombre: "Impacto Ambiental en Ingenieria  Civil", semestre: 10, requisitos: [] },
+  { codigo: "INTE"II, nombre: "Integracion de Saberes", semestre: 10, requisitos: [] },
   { codigo: "OPT2", nombre: "Optativo de Profundización II", semestre: 10, requisitos: [] },
   { codigo: "OPT3", nombre: "Optativo de Profundización III", semestre: 10, requisitos: [] },
   
@@ -72,14 +72,14 @@ const cursos = [
   { codigo: "IN1126C", nombre: "Práctica Profesional", semestre: 0, requisitos: [] },
   
   // XI SEM
-  { codigo: "IN1123C", nombre: "Evaluacion de Proyectos", semestre: 11, requisitos: [] },
-  { codigo: "IN1124", nombre: "Plaificacion y Control de Obras", semestre: 11, requisitos: [] },
+  { codigo: "IN1123C", nombre: "Evaluacion de Proyectos", semestre: 11, requisitos: ["IN1033C"] },
+  { codigo: "IN1124", nombre: "Plaificacion y Control de Obras", semestre: 11, requisitos: ["IN1117C"] },
   { codigo: "OPT4", nombre: "Optativo de Profundización IV", semestre: 11, requisitos: [] },
   { codigo: "OPT5", nombre: "Optativo de Profundización V", semestre: 11, requisitos: [] },
   { codigo: "OPT6", nombre: "Optativo de Profundización VI", semestre: 11, requisitos: [] },
 
   // XII SEM
-  { codigo: "IN1125C", nombre: "Proyecto de Título", semestre: 12, requisitos: ["IN1123C"] },
+  { codigo: "IN1125C", nombre: "Proyecto de Título", semestre: 12, requisitos: [] },
 ];
 
 // Contenedores por semestre
