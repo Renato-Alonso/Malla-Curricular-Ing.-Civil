@@ -6,32 +6,32 @@ const cursos = [
   { codigo: "TE0007C", nombre: "Fundamentos Filosóficos", semestre: 1, requisitos: [] },
   
   // II SEM
-  { codigo: "IN1004C", nombre: "Álgebra Lineal", semestre: 2, requisitos: ["IN1001"] },
+  { codigo: "IN1004C", nombre: "Álgebra Lineal", semestre: 2, requisitos: ["IN1001C"] },
   { codigo: "IN1005C", nombre: "Cálculo II", semestre: 2, requisitos: ["IN1002C"] },
-  { codigo: "IN1047C", nombre: "Dibujo en Ingeniería", semestre: 2, requisitos: ["IN1041"] },
-  { codigo: "IN1048C", nombre: "Fundamentos de Estática", semestre: 1, requisitos: ["IN1002"] },
+  { codigo: "IN1047C", nombre: "Dibujo en Ingeniería", semestre: 2, requisitos: ["IN1041C"] },
+  { codigo: "IN1048C", nombre: "Fundamentos de Estática", semestre: 1, requisitos: ["IN1002C"] },
   { codigo: "CS0002C", nombre: "Química", semestre: 2, requisitos: [] },
 
   // III SEM
-  { codigo: "IN1009C", nombre: "Cálculo III", semestre: 3, requisitos: ["IN1005"] },
-  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1005"],["IN1048"] },
-  { codigo: "IN1106C", nombre: "Estática Aplicada", semestre: 3, requisitos:["IN1005"],["IN1048"] },
-  { codigo: "IN1107C", nombre: "Materiales de Construcción", semestre: 3, requisitos: ["IN1047"] },
-  { codigo: "IN1108C", nombre: "Programación Aplicada", semestre: 3, requisitos: ["IN1005"] },
+  { codigo: "IN1009C", nombre: "Cálculo III", semestre: 3, requisitos: ["IN1005C"] },
+  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1005C"],["IN1048C"] },
+  { codigo: "IN1106C", nombre: "Estática Aplicada", semestre: 3, requisitos:["IN1005C"],["IN1048C"] },
+  { codigo: "IN1107C", nombre: "Materiales de Construcción", semestre: 3, requisitos: ["IN1047C"] },
+  { codigo: "IN1108C", nombre: "Programación Aplicada", semestre: 3, requisitos: ["IN1005C"] },
  
   // IV SEM
-  { codigo: "IN1008C", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["IN1004C"] },
-  { codigo: "IN1052C", nombre: "Cálculo Numérico", semestre: 4, requisitos: ["IN1004C"] },
-  { codigo: "IN1109C", nombre: "Cinemática y Dinámica", semestre: 4, requisitos: ["IN1001C"] },
-  { codigo: "IN1110C", nombre: "Topografía", semestre: 4, requisitos: [] },
-  { codigo: "TE0008C", nombre: "Fundamentos Teológicos", semestre: 4, requisitos: [] },
+  { codigo: "IN1008C", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["IN1005C"],["IN1004C"] },
+  { codigo: "IN1052C", nombre: "Cálculo Numérico", semestre: 4, requisitos: ["IN1005C"],["IN1108C"] },
+  { codigo: "IN1109C", nombre: "Cinemática y Dinámica", semestre: 4, requisitos: ["IN1005C"],["IN1048C"] },
+  { codigo: "IN1110C", nombre: "Topografía", semestre: 4, requisitos: ["IN1047C"] },
+  { codigo: "TE0008C", nombre: "Fundamentos Teológicos", semestre: 4, requisitos: ["TE0007C"] },
 
   // V SEM
-  { codigo: "IN1062C", nombre: "Probabilidades y Estadística", semestre: 5, requisitos: ["IN1001C"] },
-  { codigo: "IN1066C", nombre: "Termodinámica", semestre: 5, requisitos: ["IN1004C"] },
-  { codigo: "IN1111C", nombre: "Energías y Ondas", semestre: 5, requisitos: ["IN1052C"] },
-  { codigo: "IN1112C", nombre: "Resistencia de Materiales", semestre: 5, requisitos: ["IN1047C"] },
-  { codigo: "TE0009C", nombre: "Doctrina Social de la Iglesia", semestre: 5, requisitos: [] },
+  { codigo: "IN1062C", nombre: "Probabilidades y Estadística", semestre: 5, requisitos: ["IN1005C"] },
+  { codigo: "IN1066C", nombre: "Termodinámica", semestre: 5, requisitos: ["CS0002C"],["IN1048C"] },
+  { codigo: "IN1111C", nombre: "Energías y Ondas", semestre: 5, requisitos: ["IN1109C"] },
+  { codigo: "IN1112C", nombre: "Resistencia de Materiales", semestre: 5, requisitos: ["IN1106C"],["IN1008C"]},
+  { codigo: "TE0009C", nombre: "Doctrina Social de la Iglesia", semestre: 5, requisitos: ["TE0008C"] },
   
   // VI SEM
   { codigo: "IN1018C", nombre: "Mecánica de Fluidos", semestre: 6, requisitos: ["IN1051C"] },
