@@ -108,48 +108,33 @@ cursos.forEach(curso => {
   div.className = "ramo bloqueado";
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
-
-  // Guardar su estado (bloqueado o desbloqueado)
-  estadoCursos[curso.codigo] = { completado: false, div: div };
-function bloquearSiFaltan(codigo) {
-  const ramo = estadoCursos[codigo];
-  ramo.div.classList.add("bloqueado");
-  ramo.div.classList.remove("tachado");
-  ramo.completado = false;
-
-  const nuevoDiv = ramo.div.cloneNode(true);
-  ramo.div.parentNode.replaceChild(nuevoDiv, ramo.div);
-  ramo.div = nuevoDiv;
-
-  cursos.forEach(curso => {
-    if (curso.requisitos.includes(codigo)) {
-      bloquearSiFaltan(curso.codigo);
-  // Insertar en su semestre correspondiente
-  contenedores[curso.semestre].appendChild(div);
-});
-
-// === DESBLOQUEAR LOS QUE NO TIENEN REQUISITOS ===
+  // === DESBLOQUEAR INICIALES ===
 cursos.forEach(curso => {
   if (curso.requisitos.length === 0) {
     desbloquear(curso.codigo);
   }
 });
 
+// === CARGAR PROGRESO AL ABRIR ===
+cargarProgreso();
+
+
 // === FUNCIONES ===
 
-// Desbloquear ramo
+// Desbloquear un ramo
 function desbloquear(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.remove("bloqueado");
   ramo.div.addEventListener("click", () => marcarCompletado(codigo));
 }
 
-// Marcar como completado y desbloquear dependientes
+// Marcar o desmarcar un ramo
 function marcarCompletado(codigo) {
   const ramo = estadoCursos[codigo];
 
   if (ramo.div.classList.contains("bloqueado")) return;
 
+  // Alternar estado
   ramo.completado = !ramo.completado;
 
   if (ramo.completado) {
@@ -160,13 +145,47 @@ function marcarCompletado(codigo) {
 
   guardarProgreso();
 
+  // Revisar dependientes
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
         desbloquear(curso.codigo);
       } else {
         bloquearSiFaltan(curso.codigo);
+      }
+    }
+  });
+}
 
+// Bloquear un ramo y sus dependientes si falta algún requisito
+function bloquearSiFaltan(codigo) {
+  const ramo = estadoCursos[codigo];
+  ramo.div.classList.add("bloqueado");
+  ramo.div.classList.remove("tachado");
+  ramo.completado = false;
+
+  // Eliminar y reemplazar para borrar el click anterior
+  const nuevoDiv = ramo.div.cloneNode(true);
+  ramo.div.parentNode.replaceChild(nuevoDiv, ramo.div);
+  ramo.div = nuevoDiv;
+
+  cursos.forEach(curso => {
+    if (curso.requisitos.includes(codigo)) {
+      bloquearSiFaltan(curso.codigo);
+    }
+  });
+}
+
+// Guardar progreso en localStorage
+function guardarProgreso() {
+  const progreso = {};
+  for (const codigo in estadoCursos) {
+    progreso[codigo] = estadoCursos[codigo].completado;
+  }
+  localStorage.setItem("mallaProgreso", JSON.stringify(progreso));
+}
+
+// Cargar progreso de localStorage
 function cargarProgreso() {
   const progresoGuardado = localStorage.getItem("mallaProgreso");
   if (!progresoGuardado) return;
@@ -179,16 +198,10 @@ function cargarProgreso() {
       estadoCursos[codigo].div.classList.add("tachado");
       if (estadoCursos[codigo].div.classList.contains("bloqueado")) {
         desbloquear(codigo);
-        // Desbloquear iniciales
-cursos.forEach(curso => {
-  if (curso.requisitos.length === 0) {
-    desbloquear(curso.codigo);
-    // Cargar progreso guardado al abrir
-cargarProgreso();
-  }
-});
       }
     }
-  });
+  }
 }
+
+
 
