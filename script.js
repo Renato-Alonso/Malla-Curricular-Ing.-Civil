@@ -68,7 +68,7 @@ const cursos = [
   { codigo: "OPT2", nombre: "Optativo de Profundización II", semestre: 10, requisitos: [] },
   { codigo: "OPT3", nombre: "Optativo de Profundización III", semestre: 10, requisitos: [] },
   
-// Verano (Práctica)
+  // Verano (Práctica)
   { codigo: "IN1126C", nombre: "Práctica Profesional", semestre: 0, requisitos: [] },
   
   // XI SEM
@@ -80,7 +80,6 @@ const cursos = [
 
   // XII SEM
   { codigo: "IN1125C", nombre: "Proyecto de Título", semestre: 12, requisitos: ["IN1123C"] },
-  
 ];
 
 // Contenedores por semestre
