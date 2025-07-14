@@ -56,7 +56,7 @@ h1 {
   background: red;
   top: 40%;     /* más arriba */
   left: 5%;     /* mueve para centrar */
-  transform: rotate(-60deg); /* más inclinada */
+  transform: rotate(-30deg); /* más inclinada */
 }
 
 .ramo.bloqueado {
