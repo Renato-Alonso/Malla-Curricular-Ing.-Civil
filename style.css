@@ -51,8 +51,8 @@ h1 {
 .ramo.tachado::after {
   content: "";
   position: absolute;
-  width: 120%;  /* MÁS CORTA */
-  height: 2px;  /* Más fina si quieres */
+  width: 90%;  /* MÁS CORTA */
+  height: 3px;  /* Más fina si quieres */
   background: red;
   top: 50%;
   left: -10%;   /* Ajusta según tu cuadro */
