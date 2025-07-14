@@ -81,13 +81,12 @@ const cursos = [
   // XII SEM
   { codigo: "IN1125C", nombre: "Proyecto de Título", semestre: 12, requisitos: ["IN1123C"] },
 ];
-
-
-// Contenedores por semestre
+// === CONTENEDORES POR SEMESTRE ===
 const malla = document.getElementById("malla");
 const estadoCursos = {};
 const contenedores = {};
 
+// Crear los 12 semestres
 for (let i = 1; i <= 12; i++) {
   const semestreDiv = document.createElement("div");
   semestreDiv.className = "semestre";
@@ -96,37 +95,44 @@ for (let i = 1; i <= 12; i++) {
   contenedores[i] = semestreDiv;
 }
 
-// Verano
+// Crear contenedor especial Verano (Práctica)
 const veranoDiv = document.createElement("div");
 veranoDiv.className = "semestre";
 veranoDiv.setAttribute("data-semestre", "Verano");
 malla.appendChild(veranoDiv);
 contenedores[0] = veranoDiv;
 
-// Crear cursos
+// === UBICAR CADA RAMO ===
 cursos.forEach(curso => {
   const div = document.createElement("div");
   div.className = "ramo bloqueado";
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
+  // Guardar su estado (bloqueado o desbloqueado)
   estadoCursos[curso.codigo] = { completado: false, div: div };
+
+  // Insertar en su semestre correspondiente
   contenedores[curso.semestre].appendChild(div);
 });
 
-// Desbloquear iniciales
+// === DESBLOQUEAR LOS QUE NO TIENEN REQUISITOS ===
 cursos.forEach(curso => {
   if (curso.requisitos.length === 0) {
     desbloquear(curso.codigo);
   }
 });
 
+// === FUNCIONES ===
+
+// Desbloquear ramo
 function desbloquear(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.remove("bloqueado");
   ramo.div.addEventListener("click", () => marcarCompletado(codigo));
 }
 
+// Marcar como completado y desbloquear dependientes
 function marcarCompletado(codigo) {
   const ramo = estadoCursos[codigo];
   if (ramo.div.classList.contains("bloqueado") || ramo.completado) return;
@@ -136,9 +142,11 @@ function marcarCompletado(codigo) {
 
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
+      // Si todos sus requisitos están completados, desbloquear
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
         desbloquear(curso.codigo);
       }
     }
   });
 }
+
