@@ -111,7 +111,19 @@ cursos.forEach(curso => {
 
   // Guardar su estado (bloqueado o desbloqueado)
   estadoCursos[curso.codigo] = { completado: false, div: div };
+function bloquearSiFaltan(codigo) {
+  const ramo = estadoCursos[codigo];
+  ramo.div.classList.add("bloqueado");
+  ramo.div.classList.remove("tachado");
+  ramo.completado = false;
 
+  const nuevoDiv = ramo.div.cloneNode(true);
+  ramo.div.parentNode.replaceChild(nuevoDiv, ramo.div);
+  ramo.div = nuevoDiv;
+
+  cursos.forEach(curso => {
+    if (curso.requisitos.includes(codigo)) {
+      bloquearSiFaltan(curso.codigo);
   // Insertar en su semestre correspondiente
   contenedores[curso.semestre].appendChild(div);
 });
@@ -135,16 +147,46 @@ function desbloquear(codigo) {
 // Marcar como completado y desbloquear dependientes
 function marcarCompletado(codigo) {
   const ramo = estadoCursos[codigo];
-  if (ramo.div.classList.contains("bloqueado") || ramo.completado) return;
 
-  ramo.completado = true;
-  ramo.div.classList.add("tachado");
+  if (ramo.div.classList.contains("bloqueado")) return;
+
+  ramo.completado = !ramo.completado;
+
+  if (ramo.completado) {
+    ramo.div.classList.add("tachado");
+  } else {
+    ramo.div.classList.remove("tachado");
+  }
+
+  guardarProgreso();
 
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
-      // Si todos sus requisitos están completados, desbloquear
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
         desbloquear(curso.codigo);
+      } else {
+        bloquearSiFaltan(curso.codigo);
+
+function cargarProgreso() {
+  const progresoGuardado = localStorage.getItem("mallaProgreso");
+  if (!progresoGuardado) return;
+
+  const progreso = JSON.parse(progresoGuardado);
+
+  for (const codigo in progreso) {
+    if (progreso[codigo]) {
+      estadoCursos[codigo].completado = true;
+      estadoCursos[codigo].div.classList.add("tachado");
+      if (estadoCursos[codigo].div.classList.contains("bloqueado")) {
+        desbloquear(codigo);
+        // Desbloquear iniciales
+cursos.forEach(curso => {
+  if (curso.requisitos.length === 0) {
+    desbloquear(curso.codigo);
+    // Cargar progreso guardado al abrir
+cargarProgreso();
+  }
+});
       }
     }
   });
