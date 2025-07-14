@@ -108,6 +108,7 @@ cursos.forEach(curso => {
   div.className = "ramo bloqueado";
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
+
   // === DESBLOQUEAR INICIALES ===
 cursos.forEach(curso => {
   if (curso.requisitos.length === 0) {
@@ -118,65 +119,62 @@ cursos.forEach(curso => {
 // === CARGAR PROGRESO AL ABRIR ===
 cargarProgreso();
 
-
 // === FUNCIONES ===
 
-// Desbloquear un ramo
 function desbloquear(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.remove("bloqueado");
-  ramo.div.addEventListener("click", () => marcarCompletado(codigo));
+
+  // Evita duplicar listeners:
+  ramo.div.onclick = () => marcarCompletado(codigo);
 }
 
-// Marcar o desmarcar un ramo
 function marcarCompletado(codigo) {
   const ramo = estadoCursos[codigo];
-
   if (ramo.div.classList.contains("bloqueado")) return;
 
-  // Alternar estado
-  ramo.completado = !ramo.completado;
-
+  // Alterna estado:
   if (ramo.completado) {
-    ramo.div.classList.add("tachado");
-  } else {
+    // Deseleccionar:
+    ramo.completado = false;
     ramo.div.classList.remove("tachado");
+  } else {
+    // Seleccionar:
+    ramo.completado = true;
+    ramo.div.classList.add("tachado");
   }
 
   guardarProgreso();
 
-  // Revisar dependientes
+  // Revisar dependientes:
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
         desbloquear(curso.codigo);
       } else {
-        bloquearSiFaltan(curso.codigo);
+        bloquearConDependientes(curso.codigo);
       }
     }
   });
 }
 
-// Bloquear un ramo y sus dependientes si falta algún requisito
-function bloquearSiFaltan(codigo) {
+function bloquearConDependientes(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.add("bloqueado");
   ramo.div.classList.remove("tachado");
   ramo.completado = false;
 
-  // Eliminar y reemplazar para borrar el click anterior
-  const nuevoDiv = ramo.div.cloneNode(true);
-  ramo.div.parentNode.replaceChild(nuevoDiv, ramo.div);
-  ramo.div = nuevoDiv;
+  // Quitar listener:
+  ramo.div.onclick = null;
 
+  // Bloquear recursivo:
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
-      bloquearSiFaltan(curso.codigo);
+      bloquearConDependientes(curso.codigo);
     }
   });
 }
 
-// Guardar progreso en localStorage
 function guardarProgreso() {
   const progreso = {};
   for (const codigo in estadoCursos) {
@@ -185,23 +183,27 @@ function guardarProgreso() {
   localStorage.setItem("mallaProgreso", JSON.stringify(progreso));
 }
 
-// Cargar progreso de localStorage
 function cargarProgreso() {
-  const progresoGuardado = localStorage.getItem("mallaProgreso");
-  if (!progresoGuardado) return;
+  const guardado = localStorage.getItem("mallaProgreso");
+  if (!guardado) return;
 
-  const progreso = JSON.parse(progresoGuardado);
+  const progreso = JSON.parse(guardado);
 
   for (const codigo in progreso) {
     if (progreso[codigo]) {
       estadoCursos[codigo].completado = true;
       estadoCursos[codigo].div.classList.add("tachado");
-      if (estadoCursos[codigo].div.classList.contains("bloqueado")) {
-        desbloquear(codigo);
-      }
+      desbloquear(codigo);
     }
   }
+  // Revisar dependientes de forma global:
+  cursos.forEach(curso => {
+    if (curso.requisitos.length) {
+      if (curso.requisitos.every(req => estadoCursos[req].completado)) {
+        desbloquear(curso.codigo);
+      } else {
+        bloquearConDependientes(curso.codigo);
+      }
+    }
+  });
 }
-
-
-
