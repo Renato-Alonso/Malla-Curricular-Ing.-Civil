@@ -51,12 +51,12 @@ h1 {
 .ramo.tachado::after {
   content: "";
   position: absolute;
-  width: 80%;  /* MÁS CORTA */
-  height: 5px;  /* Más fina si quieres */
+  width: 90%;   /* más corta */
+  height: 2px;  /* más fina */
   background: red;
-  top: 50%;
-  left: -20%;   /* Ajusta según tu cuadro */
-  transform: rotate(-45deg);
+  top: 40%;     /* más arriba */
+  left: 5%;     /* mueve para centrar */
+  transform: rotate(-60deg); /* más inclinada */
 }
 
 .ramo.bloqueado {
