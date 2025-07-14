@@ -6,18 +6,18 @@ const cursos = [
   { codigo: "TE0007C", nombre: "Fundamentos Filosóficos", semestre: 1, requisitos: [] },
   
   // II SEM
-  { codigo: "IN1004C", nombre: "Álgebra Lineal", semestre: 2, requisitos: ["IN1002C"] },
-  { codigo: "IN1005C", nombre: "Cálculo II", semestre: 2, requisitos: ["IN1001C"] },
-  { codigo: "IN1047C", nombre: "Dibujo en Ingeniería", semestre: 2, requisitos: [] },
-  { codigo: "IN1048C", nombre: "Fundamentos de Estática", semestre: 1, requisitos: [] },
+  { codigo: "IN1004C", nombre: "Álgebra Lineal", semestre: 2, requisitos: ["IN1001"] },
+  { codigo: "IN1005C", nombre: "Cálculo II", semestre: 2, requisitos: ["IN1002C"] },
+  { codigo: "IN1047C", nombre: "Dibujo en Ingeniería", semestre: 2, requisitos: ["IN1041"] },
+  { codigo: "IN1048C", nombre: "Fundamentos de Estática", semestre: 1, requisitos: ["IN1002"] },
   { codigo: "CS0002C", nombre: "Química", semestre: 2, requisitos: [] },
 
   // III SEM
-  { codigo: "IN1009C", nombre: "Cálculo III", semestre: 3, requisitos: [] },
-  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1004C"] },
-  { codigo: "IN1106C", nombre: "Estática Aplicada", semestre: 3, requisitos: ["IN1068C"] },
-  { codigo: "IN1107C", nombre: "Materiales de Construcción", semestre: 3, requisitos: ["IN1048C"] },
-  { codigo: "IN1108C", nombre: "Programación Aplicada", semestre: 3, requisitos: [] },
+  { codigo: "IN1009C", nombre: "Cálculo III", semestre: 3, requisitos: ["IN1005"] },
+  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1005"],["IN1048"] },
+  { codigo: "IN1106C", nombre: "Estática Aplicada", semestre: 3, requisitos:["IN1005"],["IN1048"] },
+  { codigo: "IN1107C", nombre: "Materiales de Construcción", semestre: 3, requisitos: ["IN1047"] },
+  { codigo: "IN1108C", nombre: "Programación Aplicada", semestre: 3, requisitos: ["IN1005"] },
  
   // IV SEM
   { codigo: "IN1008C", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["IN1004C"] },
@@ -55,7 +55,7 @@ const cursos = [
   { codigo: "IN1118C", nombre: "Hormigon Armado", semestre: 8, requisitos: ["IN1110C"] },
 
   // IX SEM
-  { codigo: "IN1119C", nombre: "IngenieriaFluvial y  Costera", semestre: 9, requisitos: ["IN1119C"] },
+  { codigo: "IN1119C", nombre: "Ingenieria  Fluvial y Costera", semestre: 9, requisitos: ["IN1119C"] },
   { codigo: "IN1120C", nombre: "Fundaciones", semestre: 9, requisitos: ["IN1110C"] },
   { codigo: "IN1121C", nombre: "Estructuras Metálicas", semestre: 9, requisitos: ["IN1113C"] },
   { codigo: "INTEI", nombre: "Integracion de Saberes", semestre: 9, requisitos: ["IN1106C"] },
