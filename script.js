@@ -14,15 +14,15 @@ const cursos = [
 
   // III SEM
   { codigo: "IN1009C", nombre: "Cálculo III", semestre: 3, requisitos: ["IN1005C"] },
-  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1005C"],["IN1048C"] },
+  { codigo: "IN1068C", nombre: "Electromagnetismo y Circuitos", semestre: 3, requisitos: ["IN1005C","IN1048C"] },
   { codigo: "IN1106C", nombre: "Estática Aplicada", semestre: 3, requisitos:["IN1005C"],["IN1048C"] },
   { codigo: "IN1107C", nombre: "Materiales de Construcción", semestre: 3, requisitos: ["IN1047C"] },
   { codigo: "IN1108C", nombre: "Programación Aplicada", semestre: 3, requisitos: ["IN1005C"] },
  
   // IV SEM
-  { codigo: "IN1008C", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["IN1005C"],["IN1004C"] },
-  { codigo: "IN1052C", nombre: "Cálculo Numérico", semestre: 4, requisitos: ["IN1005C"],["IN1108C"] },
-  { codigo: "IN1109C", nombre: "Cinemática y Dinámica", semestre: 4, requisitos: ["IN1005C"],["IN1048C"] },
+  { codigo: "IN1008C", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["IN1005C","IN1004C"] },
+  { codigo: "IN1052C", nombre: "Cálculo Numérico", semestre: 4, requisitos: ["IN1005C","IN1108C"] },
+  { codigo: "IN1109C", nombre: "Cinemática y Dinámica", semestre: 4, requisitos: ["IN1005C","IN1048C"] },
   { codigo: "IN1110C", nombre: "Topografía", semestre: 4, requisitos: ["IN1047C"] },
   { codigo: "TE0008C", nombre: "Fundamentos Teológicos", semestre: 4, requisitos: ["TE0007C"] },
 
@@ -30,7 +30,7 @@ const cursos = [
   { codigo: "IN1062C", nombre: "Probabilidades y Estadística", semestre: 5, requisitos: ["IN1005C"] },
   { codigo: "IN1066C", nombre: "Termodinámica", semestre: 5, requisitos: ["CS0002C"],["IN1048C"] },
   { codigo: "IN1111C", nombre: "Energías y Ondas", semestre: 5, requisitos: ["IN1109C"] },
-  { codigo: "IN1112C", nombre: "Resistencia de Materiales", semestre: 5, requisitos: ["IN1106C"],["IN1008C"]},
+  { codigo: "IN1112C", nombre: "Resistencia de Materiales", semestre: 5, requisitos: ["IN1106C","IN1008C"]},
   { codigo: "TE0009C", nombre: "Doctrina Social de la Iglesia", semestre: 5, requisitos: ["TE0008C"] },
   
   // VI SEM
