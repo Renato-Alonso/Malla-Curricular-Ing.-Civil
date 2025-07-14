@@ -51,11 +51,11 @@ h1 {
 .ramo.tachado::after {
   content: "";
   position: absolute;
-  width: 140%;
-  height: 3px;
+  width: 250px; /* diagonal real: ancho + alto aproximado */
+  height: 2px;
   background: red;
   top: 50%;
-  left: -20%;
+  left: -35px;
   transform: rotate(-45deg);
   transform-origin: center;
 }
@@ -65,8 +65,3 @@ h1 {
   cursor: not-allowed;
 }
 
-
-.ramo.bloqueado {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
