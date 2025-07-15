@@ -81,12 +81,12 @@ const cursos = [
   // XII SEM
   { codigo: "IN1125C", nombre: "Proyecto de Título", semestre: 12, requisitos: ["IN1123C"] },
 ];
-// === CONTENEDORES POR SEMESTRE ===
+// === CONTENEDORES ===
 const malla = document.getElementById("malla");
 const estadoCursos = {};
 const contenedores = {};
 
-// Crear los 12 semestres
+// Crear semestres 1 a 12
 for (let i = 1; i <= 12; i++) {
   const semestreDiv = document.createElement("div");
   semestreDiv.className = "semestre";
@@ -95,37 +95,37 @@ for (let i = 1; i <= 12; i++) {
   contenedores[i] = semestreDiv;
 }
 
-// Crear contenedor especial Verano (Práctica)
+// Verano
 const veranoDiv = document.createElement("div");
 veranoDiv.className = "semestre";
 veranoDiv.setAttribute("data-semestre", "Verano");
 malla.appendChild(veranoDiv);
 contenedores[0] = veranoDiv;
 
-// === UBICAR CADA RAMO ===
+// Crear cursos
 cursos.forEach(curso => {
   const div = document.createElement("div");
   div.className = "ramo bloqueado";
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
-  // === DESBLOQUEAR INICIALES ===
+  estadoCursos[curso.codigo] = { completado: false, div: div };
+  contenedores[curso.semestre].appendChild(div);
+});
+
+// Desbloquear iniciales
 cursos.forEach(curso => {
   if (curso.requisitos.length === 0) {
     desbloquear(curso.codigo);
   }
 });
 
-// === CARGAR PROGRESO AL ABRIR ===
+// Cargar progreso guardado
 cargarProgreso();
-
-// === FUNCIONES ===
 
 function desbloquear(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.remove("bloqueado");
-
-  // Evita duplicar listeners:
   ramo.div.onclick = () => marcarCompletado(codigo);
 }
 
@@ -133,20 +133,16 @@ function marcarCompletado(codigo) {
   const ramo = estadoCursos[codigo];
   if (ramo.div.classList.contains("bloqueado")) return;
 
-  // Alterna estado:
+  ramo.completado = !ramo.completado;
+
   if (ramo.completado) {
-    // Deseleccionar:
-    ramo.completado = false;
-    ramo.div.classList.remove("tachado");
-  } else {
-    // Seleccionar:
-    ramo.completado = true;
     ramo.div.classList.add("tachado");
+  } else {
+    ramo.div.classList.remove("tachado");
   }
 
   guardarProgreso();
 
-  // Revisar dependientes:
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
@@ -163,11 +159,8 @@ function bloquearConDependientes(codigo) {
   ramo.div.classList.add("bloqueado");
   ramo.div.classList.remove("tachado");
   ramo.completado = false;
-
-  // Quitar listener:
   ramo.div.onclick = null;
 
-  // Bloquear recursivo:
   cursos.forEach(curso => {
     if (curso.requisitos.includes(codigo)) {
       bloquearConDependientes(curso.codigo);
@@ -196,7 +189,7 @@ function cargarProgreso() {
       desbloquear(codigo);
     }
   }
-  // Revisar dependientes de forma global:
+
   cursos.forEach(curso => {
     if (curso.requisitos.length) {
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
