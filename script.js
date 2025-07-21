@@ -84,21 +84,49 @@ const cursos = [
 // === CONTENEDORES ===
 const malla = document.getElementById("malla");
 const estadoCursos = {};
-const estadoTomados = {}; // Nuevo estado para ramos tomados
+const estadoTomados = {};
 const contenedores = {};
 
-// Crear semestres 1 a 12 y Verano
+// Malla como fila horizontal continua
+malla.style.display = 'flex';
+malla.style.flexDirection = 'row';       // ← fila horizontal
+malla.style.alignItems = 'flex-start';
+malla.style.overflowX = 'auto';          // scroll horizontal
+malla.style.flexWrap = 'nowrap';         // no saltar líneas
+malla.style.gap = '20px';
+malla.style.paddingBottom = '20px';
+
+// Crear semestres 1 a 12 + verano
 for (let i = 1; i <= 12; i++) {
   const semestreDiv = document.createElement("div");
   semestreDiv.className = "semestre";
-  semestreDiv.setAttribute("data-semestre", i);
+  semestreDiv.style.display = 'flex';
+  semestreDiv.style.flexDirection = 'column';
+  semestreDiv.style.alignItems = 'center';
+  semestreDiv.style.minWidth = '180px';         // ancho fijo
+  semestreDiv.style.flexShrink = '0';           // no se achica
+  semestreDiv.style.background = '#f0f0f0';
+  semestreDiv.style.padding = '10px';
+  semestreDiv.style.border = '1px solid #ccc';
+  semestreDiv.style.borderRadius = '5px';
+  semestreDiv.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.1)';
+  semestreDiv.innerHTML = `<h3>Semestre ${i}</h3>`;
   malla.appendChild(semestreDiv);
   contenedores[i] = semestreDiv;
 }
 
 const veranoDiv = document.createElement("div");
 veranoDiv.className = "semestre";
-veranoDiv.setAttribute("data-semestre", "Verano");
+veranoDiv.style.display = 'flex';
+veranoDiv.style.flexDirection = 'column';
+veranoDiv.style.alignItems = 'center';
+veranoDiv.style.minWidth = '180px';
+veranoDiv.style.flexShrink = '0';
+veranoDiv.style.background = '#f0f0f0';
+veranoDiv.style.padding = '10px';
+veranoDiv.style.border = '1px solid #ccc';
+veranoDiv.style.borderRadius = '5px';
+veranoDiv.innerHTML = `<h3>Verano</h3>`;
 malla.appendChild(veranoDiv);
 contenedores[0] = veranoDiv;
 
@@ -106,18 +134,28 @@ contenedores[0] = veranoDiv;
 cursos.forEach(curso => {
   const div = document.createElement("div");
   div.className = "ramo bloqueado";
+  div.style.margin = '5px';
+  div.style.textAlign = 'center';
+  div.style.minWidth = '120px';
+  div.style.background = '#fff';
+  div.style.padding = '10px';
+  div.style.border = '1px solid #999';
+  div.style.borderRadius = '5px';
+  div.style.transition = 'all 0.3s ease';
+
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
+  // Mostrar requisitos como nombres
   if (curso.requisitos.length > 0) {
-  const nombresReqs = curso.requisitos.map(reqCodigo => {
-    const reqCurso = cursos.find(c => c.codigo === reqCodigo);
-    return reqCurso ? reqCurso.nombre : reqCodigo;
-  });
-  div.title = 'Requisitos: ' + nombresReqs.join(', ');
-} else {
-  div.title = 'Sin requisitos';
-}
+    const nombresReqs = curso.requisitos.map(reqCodigo => {
+      const reqCurso = cursos.find(c => c.codigo === reqCodigo);
+      return reqCurso ? reqCurso.nombre : reqCodigo;
+    });
+    div.title = 'Requisitos: ' + nombresReqs.join(', ');
+  } else {
+    div.title = 'Sin requisitos';
+  }
 
   estadoCursos[curso.codigo] = { completado: false, div: div };
   estadoTomados[curso.codigo] = false;
@@ -125,9 +163,9 @@ cursos.forEach(curso => {
   div.onclick = (e) => {
     if (div.classList.contains("bloqueado")) return;
 
-    if (e.detail === 1) { // Un clic: marcar como pasado
+    if (e.detail === 1) { // un clic
       estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
-    } else if (e.detail === 2) { // Doble clic: marcar como tomado
+    } else if (e.detail === 2) { // doble clic
       estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
     }
 
@@ -139,85 +177,67 @@ cursos.forEach(curso => {
   contenedores[curso.semestre].appendChild(div);
 });
 
-// Desbloquear iniciales
-cursos.forEach(curso => {
-  if (curso.requisitos.length === 0) {
-    desbloquear(curso.codigo);
-  }
-});
-
-// Cargar progreso guardado
-cargarProgreso();
-
+// Función: actualizar visualmente un curso
 function actualizarCurso(codigo) {
   const ramo = estadoCursos[codigo];
-  ramo.div.classList.toggle("tachado", ramo.completado);
-  ramo.div.style.textDecoration = ramo.completado ? 'line-through' : 'none';
+  const div = ramo.div;
+
+  div.style.textDecoration = ramo.completado ? 'line-through' : 'none';
+  div.style.textDecorationThickness = '3px';
+  div.style.textDecorationColor = 'red';
+  div.style.textDecorationStyle = 'double';
 
   if (estadoTomados[codigo]) {
-    ramo.div.style.border = '3px solid blue';
-    ramo.div.style.borderRadius = '50%';
-    ramo.div.style.padding = '20px';
+    div.style.border = '3px solid blue';
+    div.style.borderRadius = '50%';
+    div.style.padding = '20px';
   } else {
-    ramo.div.style.border = '';
-    ramo.div.style.borderRadius = '';
-    ramo.div.style.padding = '';
+    div.style.border = '1px solid #999';
+    div.style.borderRadius = '5px';
+    div.style.padding = '10px';
   }
 }
 
+// Función: desbloquear ramos que cumplen requisitos
 function actualizarDependencias() {
   cursos.forEach(curso => {
-    if (curso.requisitos.length > 0) {
-      if (curso.requisitos.every(req => estadoCursos[req].completado)) {
-        desbloquear(curso.codigo);
-      } else {
-        bloquearConDependientes(curso.codigo);
-      }
+    const requisitosCumplidos = curso.requisitos.every(req => estadoCursos[req].completado);
+
+    if (requisitosCumplidos || curso.requisitos.length === 0) {
+      estadoCursos[curso.codigo].div.classList.remove("bloqueado");
+    } else {
+      estadoCursos[curso.codigo].div.classList.add("bloqueado");
     }
   });
 }
 
-function desbloquear(codigo) {
-  const ramo = estadoCursos[codigo];
-  ramo.div.classList.remove("bloqueado");
-}
-
-function bloquearConDependientes(codigo) {
-  const ramo = estadoCursos[codigo];
-  ramo.div.classList.add("bloqueado");
-  ramo.div.classList.remove("tachado");
-  ramo.completado = false;
-}
-
+// Función: guardar progreso
 function guardarProgreso() {
-  const progreso = {
-    completados: {},
-    tomados: {}
-  };
-
-  for (const codigo in estadoCursos) {
-    progreso.completados[codigo] = estadoCursos[codigo].completado;
-    progreso.tomados[codigo] = estadoTomados[codigo];
-  }
-
+  const progreso = {};
+  cursos.forEach(curso => {
+    progreso[curso.codigo] = {
+      completado: estadoCursos[curso.codigo].completado,
+      tomado: estadoTomados[curso.codigo]
+    };
+  });
   localStorage.setItem("mallaProgreso", JSON.stringify(progreso));
 }
 
+// Función: cargar progreso
 function cargarProgreso() {
   const guardado = localStorage.getItem("mallaProgreso");
   if (!guardado) return;
 
   const progreso = JSON.parse(guardado);
 
-  for (const codigo in progreso.completados) {
-    estadoCursos[codigo].completado = progreso.completados[codigo];
-    actualizarCurso(codigo);
-  }
-
-  for (const codigo in progreso.tomados) {
-    estadoTomados[codigo] = progreso.tomados[codigo];
+  for (const codigo in progreso) {
+    estadoCursos[codigo].completado = progreso[codigo].completado;
+    estadoTomados[codigo] = progreso[codigo].tomado;
     actualizarCurso(codigo);
   }
 
   actualizarDependencias();
 }
+
+// Cargar progreso guardado al iniciar
+cargarProgreso();
