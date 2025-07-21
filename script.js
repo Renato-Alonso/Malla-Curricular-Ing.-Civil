@@ -109,9 +109,15 @@ cursos.forEach(curso => {
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
-  div.title = curso.requisitos.length > 0 ?
-    'Requisitos: ' + curso.requisitos.join(', ') :
-    'Sin requisitos';
+  if (curso.requisitos.length > 0) {
+  const nombresReqs = curso.requisitos.map(reqCodigo => {
+    const reqCurso = cursos.find(c => c.codigo === reqCodigo);
+    return reqCurso ? reqCurso.nombre : reqCodigo;
+  });
+  div.title = 'Requisitos: ' + nombresReqs.join(', ');
+} else {
+  div.title = 'Sin requisitos';
+}
 
   estadoCursos[curso.codigo] = { completado: false, div: div };
   estadoTomados[curso.codigo] = false;
