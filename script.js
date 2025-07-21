@@ -219,4 +219,36 @@ div.addEventListener('touchend', (e) => {
   actualizarCurso(curso.codigo);
   actualizarDependencias();
   guardarProgreso();
+  const tooltip = document.getElementById('tooltip');
+
+document.addEventListener('click', () => {
+  tooltip.style.display = 'none';
+});
+
+// Mostrar tooltip en clic
+cursos.forEach(curso => {
+  const div = estadoCursos[curso.codigo].div;
+
+  div.addEventListener('click', (e) => {
+    if (div.classList.contains("bloqueado")) return;
+
+    // Mostrar requisitos si existen
+    if (curso.requisitos.length > 0) {
+      const nombresReqs = curso.requisitos
+        .map(req => cursos.find(c => c.codigo === req)?.nombre || req);
+      tooltip.textContent = 'Requisitos: ' + nombresReqs.join(', ');
+    } else {
+      tooltip.textContent = 'Sin requisitos';
+    }
+
+    // Posicionar tooltip
+    const rect = div.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + window.scrollX}px`;
+    tooltip.style.top = `${rect.top + window.scrollY - 60}px`;
+    tooltip.style.display = 'block';
+
+    e.stopPropagation(); // Evita que se cierre de inmediato
+  });
+});
+
 });
