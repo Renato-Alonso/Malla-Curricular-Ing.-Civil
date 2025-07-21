@@ -13,10 +13,8 @@ h1 {
 malla.style.display = 'flex';
 malla.style.flexDirection = 'row';
 malla.style.alignItems = 'flex-start';
-malla.style.overflowX = 'auto';    // Permite scroll horizontal
-malla.style.flexWrap = 'nowrap';   // Mantiene columnas horizontales
-malla.style.gap = '10px';
-malla.style.paddingBottom = '20px'; // Espacio para scroll
+malla.style.overflowX = 'auto';
+malla.style.gap = '20px';
 }
 
 .semestre {
