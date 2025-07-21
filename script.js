@@ -252,3 +252,78 @@ cursos.forEach(curso => {
 });
 
 });
+cursos.forEach(curso => {
+  const div = document.createElement("div");
+  div.className = "ramo bloqueado";
+  div.id = curso.codigo;
+
+  // Contenido del ramo
+  const nombre = document.createElement("div");
+  nombre.innerText = `${curso.nombre}\n(${curso.codigo})`;
+  nombre.style.flex = "1";
+
+  // Botón flecha
+  const boton = document.createElement("button");
+  boton.innerHTML = "▼";
+  boton.className = "toggle-info";
+
+  // Panel desplegable de requisitos
+  const panel = document.createElement("div");
+  panel.className = "panel-requisitos";
+  panel.style.display = "none";
+
+  // Contenido del panel
+  if (curso.requisitos.length > 0) {
+    const nombresReqs = curso.requisitos
+      .map(req => cursos.find(c => c.codigo === req)?.nombre || req);
+    panel.innerText = "Requisitos: " + nombresReqs.join(", ");
+  } else {
+    panel.innerText = "Sin requisitos.";
+  }
+
+  // Interacción flecha
+  boton.onclick = (e) => {
+    e.stopPropagation();
+    panel.style.display = (panel.style.display === "none") ? "block" : "none";
+    boton.innerHTML = (panel.style.display === "none") ? "▼" : "▲";
+  };
+
+  // Armado del div del ramo
+  div.appendChild(nombre);
+  div.appendChild(boton);
+  div.appendChild(panel);
+
+  estadoCursos[curso.codigo] = { completado: false, div: div };
+  estadoTomados[curso.codigo] = false;
+
+  // Manejo de taps y clics igual que antes
+  let lastTap = 0;
+  div.addEventListener('touchend', (e) => {
+    if (div.classList.contains("bloqueado")) return;
+
+    const now = new Date().getTime();
+    const timeDiff = now - lastTap;
+
+    if (timeDiff < 300 && timeDiff > 0) {
+      estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
+    } else {
+      estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+    }
+
+    lastTap = now;
+    actualizarCurso(curso.codigo);
+    actualizarDependencias();
+    guardarProgreso();
+  });
+
+  div.addEventListener('click', (e) => {
+    if (div.classList.contains("bloqueado")) return;
+    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+    actualizarCurso(curso.codigo);
+    actualizarDependencias();
+    guardarProgreso();
+  });
+
+  contenedores[curso.semestre].appendChild(div);
+});
+
