@@ -112,6 +112,74 @@ cursos.forEach(curso => {
   estadoCursos[curso.codigo] = { completado: false, div: div };
   contenedores[curso.semestre].appendChild(div);
 });
+const estadoCursos = {};
+const estadoTomados = {}; // Nuevo estado para ramos tomados
+
+function renderMalla() {
+    const malla = document.getElementById('malla');
+    malla.innerHTML = '';
+
+    semestres.forEach(semestre => {
+        const semestreDiv = document.createElement('div');
+        semestreDiv.className = 'semestre';
+
+        const titulo = document.createElement('h2');
+        titulo.textContent = `Semestre ${semestre.numero}`;
+        semestreDiv.appendChild(titulo);
+
+        const cursosDiv = document.createElement('div');
+        cursosDiv.className = 'cursos';
+
+        semestre.cursos.forEach(curso => {
+            const requisitosCumplidos = curso.requisitos.every(req => estadoCursos[req] === 'aprobado');
+            const cursoDiv = document.createElement('div');
+            cursoDiv.className = 'curso';
+
+            if (!requisitosCumplidos && curso.requisitos.length > 0 && estadoCursos[curso.id] !== 'aprobado') {
+                cursoDiv.classList.add('bloqueado');
+            }
+
+            if (estadoCursos[curso.id] === 'aprobado') {
+                cursoDiv.classList.add('aprobado');
+                cursoDiv.style.textDecoration = 'line-through';
+                cursoDiv.style.textDecorationThickness = '3px';
+                cursoDiv.style.textDecorationColor = 'red';
+                cursoDiv.style.textDecorationStyle = 'double';
+            }
+
+            if (estadoTomados[curso.id] === 'tomado') {
+                cursoDiv.style.border = '3px solid blue';
+                cursoDiv.style.borderRadius = '50%';
+                cursoDiv.style.padding = '20px';
+            }
+
+            cursoDiv.title = curso.requisitos.length > 0 ?
+                'Requisitos: ' + curso.requisitos.join(', ') :
+                'Sin requisitos';
+
+            cursoDiv.textContent = curso.nombre;
+
+            cursoDiv.onclick = (e) => {
+                if (!cursoDiv.classList.contains('bloqueado')) {
+                    if (e.detail === 1) { // un clic
+                        estadoCursos[curso.id] = estadoCursos[curso.id] === 'aprobado' ? null : 'aprobado';
+                    } else if (e.detail === 2) { // doble clic
+                        estadoTomados[curso.id] = estadoTomados[curso.id] === 'tomado' ? null : 'tomado';
+                    }
+                    renderMalla();
+                }
+            };
+
+            cursosDiv.appendChild(cursoDiv);
+        });
+
+        semestreDiv.appendChild(cursosDiv);
+        malla.appendChild(semestreDiv);
+    });
+}
+
+renderMalla();
+
 
 // Desbloquear iniciales
 cursos.forEach(curso => {
