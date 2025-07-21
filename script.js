@@ -126,7 +126,7 @@ cursos.forEach(curso => {
     ? "Requisitos: " + curso.requisitos.map(req => cursos.find(c => c.codigo === req)?.nombre || req).join(", ")
     : "Sin requisitos.";
 
-  // Alternar visibilidad del panel
+  // Alternar visibilidad del panel (NO propaga el clic)
   boton.onclick = (e) => {
     e.stopPropagation();
     panel.style.display = panel.style.display === "none" ? "block" : "none";
@@ -142,29 +142,49 @@ cursos.forEach(curso => {
   estadoCursos[curso.codigo] = { completado: false, div };
   estadoTomados[curso.codigo] = false;
 
-  // Interacción por tap (móvil)
-  let lastTap = 0;
-  div.addEventListener('touchend', (e) => {
-    if (div.classList.contains("bloqueado")) return;
-    const now = new Date().getTime();
-    const timeDiff = now - lastTap;
+  // Manejador para distinguir clic y doble clic
+  let lastClick = 0;
 
-    if (timeDiff < 300 && timeDiff > 0) {
+  div.addEventListener('click', (e) => {
+    if (div.classList.contains("bloqueado")) return;
+
+    // Si el clic fue en el botón, ignorar
+    if (e.target === boton) return;
+
+    const now = new Date().getTime();
+    const diff = now - lastClick;
+
+    if (diff < 300) {
+      // Doble clic: alterna 'tomado'
       estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
     } else {
+      // Clic simple: alterna 'completado'
       estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
     }
 
-    lastTap = now;
+    lastClick = now;
+
     actualizarCurso(curso.codigo);
     actualizarDependencias();
     guardarProgreso();
   });
 
-  // Interacción por clic (desktop)
-  div.addEventListener('click', (e) => {
+  // Manejador para móvil (doble toque)
+  let lastTap = 0;
+  div.addEventListener('touchend', (e) => {
     if (div.classList.contains("bloqueado")) return;
-    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+
+    const touchNow = new Date().getTime();
+    const tapDiff = touchNow - lastTap;
+
+    if (tapDiff < 300) {
+      estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
+    } else {
+      estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+    }
+
+    lastTap = touchNow;
+
     actualizarCurso(curso.codigo);
     actualizarDependencias();
     guardarProgreso();
