@@ -86,6 +86,7 @@ const estadoCursos = {};
 const estadoTomados = {};
 const contenedores = {};
 
+// Crear contenedores por semestre (1 a 12)
 for (let i = 1; i <= 12; i++) {
   const div = document.createElement("div");
   div.className = "semestre";
@@ -94,56 +95,80 @@ for (let i = 1; i <= 12; i++) {
   contenedores[i] = div;
 }
 
-// Verano (semestre 0)
+// Semestre 0 (verano)
 const veranoDiv = document.createElement("div");
 veranoDiv.className = "semestre";
 veranoDiv.setAttribute("data-semestre", 0);
 malla.appendChild(veranoDiv);
 contenedores[0] = veranoDiv;
 
-// Crear cursos
+// Crear cada ramo
 cursos.forEach(curso => {
   const div = document.createElement("div");
   div.className = "ramo bloqueado";
   div.id = curso.codigo;
-  div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
-  // Tooltip de requisitos
-  if (curso.requisitos.length > 0) {
-    const nombresReqs = curso.requisitos
-      .map(req => cursos.find(c => c.codigo === req)?.nombre || req);
-    div.title = 'Requisitos: ' + nombresReqs.join(', ');
-  } else {
-    div.title = 'Sin requisitos';
-  }
+  // Título del curso
+  const nombre = document.createElement("div");
+  nombre.innerText = `${curso.nombre}\n(${curso.codigo})`;
+  nombre.style.flex = "1";
 
-  estadoCursos[curso.codigo] = { completado: false, div: div };
+  // Flecha para mostrar requisitos
+  const boton = document.createElement("button");
+  boton.innerHTML = "▼";
+  boton.className = "toggle-info";
+
+  // Panel de requisitos
+  const panel = document.createElement("div");
+  panel.className = "panel-requisitos";
+  panel.style.display = "none";
+  panel.innerText = curso.requisitos.length > 0
+    ? "Requisitos: " + curso.requisitos.map(req => cursos.find(c => c.codigo === req)?.nombre || req).join(", ")
+    : "Sin requisitos.";
+
+  // Alternar visibilidad del panel
+  boton.onclick = (e) => {
+    e.stopPropagation();
+    panel.style.display = panel.style.display === "none" ? "block" : "none";
+    boton.innerHTML = panel.style.display === "none" ? "▼" : "▲";
+  };
+
+  // Armar el ramo
+  div.appendChild(nombre);
+  div.appendChild(boton);
+  div.appendChild(panel);
+
+  // Guardar estado
+  estadoCursos[curso.codigo] = { completado: false, div };
   estadoTomados[curso.codigo] = false;
 
-  // Clic y doble clic (con timeout)
-  let clickTimeout = null;
-  div.onclick = (e) => {
+  // Interacción por tap (móvil)
+  let lastTap = 0;
+  div.addEventListener('touchend', (e) => {
     if (div.classList.contains("bloqueado")) return;
+    const now = new Date().getTime();
+    const timeDiff = now - lastTap;
 
-    if (clickTimeout) {
-      clearTimeout(clickTimeout);
-      clickTimeout = null;
+    if (timeDiff < 300 && timeDiff > 0) {
       estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
     } else {
-      clickTimeout = setTimeout(() => {
-        estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
-        actualizarCurso(curso.codigo);
-        actualizarDependencias();
-        guardarProgreso();
-        clickTimeout = null;
-      }, 250);
-      return;
+      estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
     }
 
+    lastTap = now;
     actualizarCurso(curso.codigo);
     actualizarDependencias();
     guardarProgreso();
-  };
+  });
+
+  // Interacción por clic (desktop)
+  div.addEventListener('click', (e) => {
+    if (div.classList.contains("bloqueado")) return;
+    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+    actualizarCurso(curso.codigo);
+    actualizarDependencias();
+    guardarProgreso();
+  });
 
   contenedores[curso.semestre].appendChild(div);
 });
@@ -199,131 +224,5 @@ function cargarProgreso() {
 }
 
 cargarProgreso();
-let lastTap = 0;
 
-div.addEventListener('touchend', (e) => {
-  if (div.classList.contains("bloqueado")) return;
-
-  const now = new Date().getTime();
-  const timeDiff = now - lastTap;
-
-  if (timeDiff < 300 && timeDiff > 0) {
-    // Doble tap
-    estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
-  } else {
-    // Tap simple
-    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
-  }
-
-  lastTap = now;
-  actualizarCurso(curso.codigo);
-  actualizarDependencias();
-  guardarProgreso();
-  const tooltip = document.getElementById('tooltip');
-
-document.addEventListener('click', () => {
-  tooltip.style.display = 'none';
-});
-
-// Mostrar tooltip en clic
-cursos.forEach(curso => {
-  const div = estadoCursos[curso.codigo].div;
-
-  div.addEventListener('click', (e) => {
-    if (div.classList.contains("bloqueado")) return;
-
-    // Mostrar requisitos si existen
-    if (curso.requisitos.length > 0) {
-      const nombresReqs = curso.requisitos
-        .map(req => cursos.find(c => c.codigo === req)?.nombre || req);
-      tooltip.textContent = 'Requisitos: ' + nombresReqs.join(', ');
-    } else {
-      tooltip.textContent = 'Sin requisitos';
-    }
-
-    // Posicionar tooltip
-    const rect = div.getBoundingClientRect();
-    tooltip.style.left = `${rect.left + window.scrollX}px`;
-    tooltip.style.top = `${rect.top + window.scrollY - 60}px`;
-    tooltip.style.display = 'block';
-
-    e.stopPropagation(); // Evita que se cierre de inmediato
-  });
-});
-
-});
-cursos.forEach(curso => {
-  const div = document.createElement("div");
-  div.className = "ramo bloqueado";
-  div.id = curso.codigo;
-
-  // Contenido del ramo
-  const nombre = document.createElement("div");
-  nombre.innerText = `${curso.nombre}\n(${curso.codigo})`;
-  nombre.style.flex = "1";
-
-  // Botón flecha
-  const boton = document.createElement("button");
-  boton.innerHTML = "▼";
-  boton.className = "toggle-info";
-
-  // Panel desplegable de requisitos
-  const panel = document.createElement("div");
-  panel.className = "panel-requisitos";
-  panel.style.display = "none";
-
-  // Contenido del panel
-  if (curso.requisitos.length > 0) {
-    const nombresReqs = curso.requisitos
-      .map(req => cursos.find(c => c.codigo === req)?.nombre || req);
-    panel.innerText = "Requisitos: " + nombresReqs.join(", ");
-  } else {
-    panel.innerText = "Sin requisitos.";
-  }
-
-  // Interacción flecha
-  boton.onclick = (e) => {
-    e.stopPropagation();
-    panel.style.display = (panel.style.display === "none") ? "block" : "none";
-    boton.innerHTML = (panel.style.display === "none") ? "▼" : "▲";
-  };
-
-  // Armado del div del ramo
-  div.appendChild(nombre);
-  div.appendChild(boton);
-  div.appendChild(panel);
-
-  estadoCursos[curso.codigo] = { completado: false, div: div };
-  estadoTomados[curso.codigo] = false;
-
-  // Manejo de taps y clics igual que antes
-  let lastTap = 0;
-  div.addEventListener('touchend', (e) => {
-    if (div.classList.contains("bloqueado")) return;
-
-    const now = new Date().getTime();
-    const timeDiff = now - lastTap;
-
-    if (timeDiff < 300 && timeDiff > 0) {
-      estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
-    } else {
-      estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
-    }
-
-    lastTap = now;
-    actualizarCurso(curso.codigo);
-    actualizarDependencias();
-    guardarProgreso();
-  });
-
-  div.addEventListener('click', (e) => {
-    if (div.classList.contains("bloqueado")) return;
-    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
-    actualizarCurso(curso.codigo);
-    actualizarDependencias();
-    guardarProgreso();
-  });
-
-  contenedores[curso.semestre].appendChild(div);
-});
 
