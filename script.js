@@ -199,3 +199,24 @@ function cargarProgreso() {
 }
 
 cargarProgreso();
+let lastTap = 0;
+
+div.addEventListener('touchend', (e) => {
+  if (div.classList.contains("bloqueado")) return;
+
+  const now = new Date().getTime();
+  const timeDiff = now - lastTap;
+
+  if (timeDiff < 300 && timeDiff > 0) {
+    // Doble tap
+    estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
+  } else {
+    // Tap simple
+    estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+  }
+
+  lastTap = now;
+  actualizarCurso(curso.codigo);
+  actualizarDependencias();
+  guardarProgreso();
+});
