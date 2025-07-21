@@ -84,9 +84,10 @@ const cursos = [
 // === CONTENEDORES ===
 const malla = document.getElementById("malla");
 const estadoCursos = {};
+const estadoTomados = {}; // Nuevo estado para ramos tomados
 const contenedores = {};
 
-// Crear semestres 1 a 12
+// Crear semestres 1 a 12 y Verano
 for (let i = 1; i <= 12; i++) {
   const semestreDiv = document.createElement("div");
   semestreDiv.className = "semestre";
@@ -95,7 +96,6 @@ for (let i = 1; i <= 12; i++) {
   contenedores[i] = semestreDiv;
 }
 
-// Verano
 const veranoDiv = document.createElement("div");
 veranoDiv.className = "semestre";
 veranoDiv.setAttribute("data-semestre", "Verano");
@@ -109,77 +109,29 @@ cursos.forEach(curso => {
   div.id = curso.codigo;
   div.innerText = `${curso.nombre}\n(${curso.codigo})`;
 
+  div.title = curso.requisitos.length > 0 ?
+    'Requisitos: ' + curso.requisitos.join(', ') :
+    'Sin requisitos';
+
   estadoCursos[curso.codigo] = { completado: false, div: div };
+  estadoTomados[curso.codigo] = false;
+
+  div.onclick = (e) => {
+    if (div.classList.contains("bloqueado")) return;
+
+    if (e.detail === 1) { // Un clic: marcar como pasado
+      estadoCursos[curso.codigo].completado = !estadoCursos[curso.codigo].completado;
+    } else if (e.detail === 2) { // Doble clic: marcar como tomado
+      estadoTomados[curso.codigo] = !estadoTomados[curso.codigo];
+    }
+
+    actualizarCurso(curso.codigo);
+    actualizarDependencias();
+    guardarProgreso();
+  };
+
   contenedores[curso.semestre].appendChild(div);
 });
-const estadoCursos = {};
-const estadoTomados = {}; // Nuevo estado para ramos tomados
-
-function renderMalla() {
-    const malla = document.getElementById('malla');
-    malla.innerHTML = '';
-
-    semestres.forEach(semestre => {
-        const semestreDiv = document.createElement('div');
-        semestreDiv.className = 'semestre';
-
-        const titulo = document.createElement('h2');
-        titulo.textContent = `Semestre ${semestre.numero}`;
-        semestreDiv.appendChild(titulo);
-
-        const cursosDiv = document.createElement('div');
-        cursosDiv.className = 'cursos';
-
-        semestre.cursos.forEach(curso => {
-            const requisitosCumplidos = curso.requisitos.every(req => estadoCursos[req] === 'aprobado');
-            const cursoDiv = document.createElement('div');
-            cursoDiv.className = 'curso';
-
-            if (!requisitosCumplidos && curso.requisitos.length > 0 && estadoCursos[curso.id] !== 'aprobado') {
-                cursoDiv.classList.add('bloqueado');
-            }
-
-            if (estadoCursos[curso.id] === 'aprobado') {
-                cursoDiv.classList.add('aprobado');
-                cursoDiv.style.textDecoration = 'line-through';
-                cursoDiv.style.textDecorationThickness = '3px';
-                cursoDiv.style.textDecorationColor = 'red';
-                cursoDiv.style.textDecorationStyle = 'double';
-            }
-
-            if (estadoTomados[curso.id] === 'tomado') {
-                cursoDiv.style.border = '3px solid blue';
-                cursoDiv.style.borderRadius = '50%';
-                cursoDiv.style.padding = '20px';
-            }
-
-            cursoDiv.title = curso.requisitos.length > 0 ?
-                'Requisitos: ' + curso.requisitos.join(', ') :
-                'Sin requisitos';
-
-            cursoDiv.textContent = curso.nombre;
-
-            cursoDiv.onclick = (e) => {
-                if (!cursoDiv.classList.contains('bloqueado')) {
-                    if (e.detail === 1) { // un clic
-                        estadoCursos[curso.id] = estadoCursos[curso.id] === 'aprobado' ? null : 'aprobado';
-                    } else if (e.detail === 2) { // doble clic
-                        estadoTomados[curso.id] = estadoTomados[curso.id] === 'tomado' ? null : 'tomado';
-                    }
-                    renderMalla();
-                }
-            };
-
-            cursosDiv.appendChild(cursoDiv);
-        });
-
-        semestreDiv.appendChild(cursosDiv);
-        malla.appendChild(semestreDiv);
-    });
-}
-
-renderMalla();
-
 
 // Desbloquear iniciales
 cursos.forEach(curso => {
@@ -191,28 +143,25 @@ cursos.forEach(curso => {
 // Cargar progreso guardado
 cargarProgreso();
 
-function desbloquear(codigo) {
+function actualizarCurso(codigo) {
   const ramo = estadoCursos[codigo];
-  ramo.div.classList.remove("bloqueado");
-  ramo.div.onclick = () => marcarCompletado(codigo);
+  ramo.div.classList.toggle("tachado", ramo.completado);
+  ramo.div.style.textDecoration = ramo.completado ? 'line-through' : 'none';
+
+  if (estadoTomados[codigo]) {
+    ramo.div.style.border = '3px solid blue';
+    ramo.div.style.borderRadius = '50%';
+    ramo.div.style.padding = '20px';
+  } else {
+    ramo.div.style.border = '';
+    ramo.div.style.borderRadius = '';
+    ramo.div.style.padding = '';
+  }
 }
 
-function marcarCompletado(codigo) {
-  const ramo = estadoCursos[codigo];
-  if (ramo.div.classList.contains("bloqueado")) return;
-
-  ramo.completado = !ramo.completado;
-
-  if (ramo.completado) {
-    ramo.div.classList.add("tachado");
-  } else {
-    ramo.div.classList.remove("tachado");
-  }
-
-  guardarProgreso();
-
+function actualizarDependencias() {
   cursos.forEach(curso => {
-    if (curso.requisitos.includes(codigo)) {
+    if (curso.requisitos.length > 0) {
       if (curso.requisitos.every(req => estadoCursos[req].completado)) {
         desbloquear(curso.codigo);
       } else {
@@ -222,25 +171,29 @@ function marcarCompletado(codigo) {
   });
 }
 
+function desbloquear(codigo) {
+  const ramo = estadoCursos[codigo];
+  ramo.div.classList.remove("bloqueado");
+}
+
 function bloquearConDependientes(codigo) {
   const ramo = estadoCursos[codigo];
   ramo.div.classList.add("bloqueado");
   ramo.div.classList.remove("tachado");
   ramo.completado = false;
-  ramo.div.onclick = null;
-
-  cursos.forEach(curso => {
-    if (curso.requisitos.includes(codigo)) {
-      bloquearConDependientes(curso.codigo);
-    }
-  });
 }
 
 function guardarProgreso() {
-  const progreso = {};
+  const progreso = {
+    completados: {},
+    tomados: {}
+  };
+
   for (const codigo in estadoCursos) {
-    progreso[codigo] = estadoCursos[codigo].completado;
+    progreso.completados[codigo] = estadoCursos[codigo].completado;
+    progreso.tomados[codigo] = estadoTomados[codigo];
   }
+
   localStorage.setItem("mallaProgreso", JSON.stringify(progreso));
 }
 
@@ -250,21 +203,15 @@ function cargarProgreso() {
 
   const progreso = JSON.parse(guardado);
 
-  for (const codigo in progreso) {
-    if (progreso[codigo]) {
-      estadoCursos[codigo].completado = true;
-      estadoCursos[codigo].div.classList.add("tachado");
-      desbloquear(codigo);
-    }
+  for (const codigo in progreso.completados) {
+    estadoCursos[codigo].completado = progreso.completados[codigo];
+    actualizarCurso(codigo);
   }
 
-  cursos.forEach(curso => {
-    if (curso.requisitos.length) {
-      if (curso.requisitos.every(req => estadoCursos[req].completado)) {
-        desbloquear(curso.codigo);
-      } else {
-        bloquearConDependientes(curso.codigo);
-      }
-    }
-  });
+  for (const codigo in progreso.tomados) {
+    estadoTomados[codigo] = progreso.tomados[codigo];
+    actualizarCurso(codigo);
+  }
+
+  actualizarDependencias();
 }
