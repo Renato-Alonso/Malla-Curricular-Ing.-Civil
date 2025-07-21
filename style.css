@@ -11,19 +11,26 @@ h1 {
 
 #malla {
   display: flex;
-  flex-direction: row;       /* ← fila horizontal */
+  flex-direction: row;
   align-items: flex-start;
-  overflow-x: auto;          /* scroll horizontal */
-  flex-wrap: nowrap;         /* no saltar líneas */
+  overflow-x: auto;
+  flex-wrap: nowrap;
   gap: 20px;
+  scroll-behavior: smooth;
 }
 
 .semestre {
   display: flex;
-  flex-direction: column;    /* ← columna vertical */
+  flex-direction: column;
   align-items: center;
   min-width: 160px;
   flex-shrink: 0;
+  background: #f0f0f0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  color: black;
 }
 
 .semestre::before {
@@ -33,10 +40,15 @@ h1 {
   font-weight: bold;
   font-size: 20px;
   margin-bottom: 10px;
+  text-align: center;
+}
+
+.semestre[data-semestre="0"]::before {
+  content: "Verano";
 }
 
 .ramo {
-  background-color: black;
+  background-color: #1e1e1e;
   border-radius: 12px;
   padding: 10px;
   width: 180px;
@@ -49,6 +61,12 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ramo:hover {
+  background-color: #333;
+  transform: scale(1.02);
 }
 
 .ramo.tachado::after {
