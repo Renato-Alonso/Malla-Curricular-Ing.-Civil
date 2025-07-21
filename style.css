@@ -85,4 +85,17 @@ h1 {
   cursor: not-allowed;
 }
 
+.tooltip {
+  position: absolute;
+  background: #222;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  font-size: 14px;
+  max-width: 200px;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
 
