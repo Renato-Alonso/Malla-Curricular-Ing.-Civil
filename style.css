@@ -11,25 +11,19 @@ h1 {
 
 #malla {
 malla.style.display = 'flex';
-malla.style.flexDirection = 'row';     // Fila horizontal
-malla.style.alignItems = 'flex-start'; // Alinea las columnas arriba
-malla.style.overflowX = 'auto';        // Scroll horizontal si no cabe
-malla.style.flexWrap = 'nowrap';       // No saltes líneas, mantén horizontal
-malla.style.gap = '15px';              // Separación entre columnas
-malla.style.padding = '10px';
+malla.style.flexDirection = 'row';       // ← fila horizontal
+malla.style.alignItems = 'flex-start';
+malla.style.overflowX = 'auto';          // scroll horizontal
+malla.style.flexWrap = 'nowrap';         // no saltar líneas
+malla.style.gap = '20px';
 }
 
 .semestre {
-semestreDiv.style.minWidth = '180px';     // Ancho fijo para columna
-semestreDiv.style.flexShrink = '0';       // Evita que la columna se achique
 semestreDiv.style.display = 'flex';
-semestreDiv.style.flexDirection = 'column';
+semestreDiv.style.flexDirection = 'column';  // ← columna vertical
 semestreDiv.style.alignItems = 'center';
-semestreDiv.style.background = '#f0f0f0';
-semestreDiv.style.padding = '10px';
-semestreDiv.style.border = '1px solid #ccc';
-semestreDiv.style.borderRadius = '5px';
-
+semestreDiv.style.minWidth = '160px';        // cada columna fija
+semestreDiv.style.flexShrink = '0';          // no se achica
 }
 
 .semestre::before {
