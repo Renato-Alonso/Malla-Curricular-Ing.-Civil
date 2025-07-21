@@ -202,10 +202,17 @@ function actualizarCurso(codigo) {
   if (estadoTomados[codigo]) {
     div.style.border = '3px solid blue';
     div.style.borderRadius = '50%';
-    div.style.padding = '20px';
+    div.style.width = '180px';  // asegura ancho fijo
+    div.style.height = '120px'; // altura para que quede ovalado
+    div.style.padding = '10px';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.justifyContent = 'center';
   } else {
     div.style.border = '1px solid #999';
     div.style.borderRadius = '12px';
+    div.style.width = '180px';   // vuelve a ancho original
+    div.style.height = 'auto';   // altura normal según contenido
     div.style.padding = '10px';
   }
 }
