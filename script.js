@@ -58,13 +58,13 @@ const cursos = [
   { codigo: "IN1119C", nombre: "Ingeniería Fluvial y Costera", semestre: 9, requisitos: ["IN1114C","IN1111C"] },
   { codigo: "IN1120C", nombre: "Fundaciones", semestre: 9, requisitos: ["IN1017C"] },
   { codigo: "IN1121C", nombre: "Estructuras Metálicas", semestre: 9, requisitos: ["IN1051C"] },
-  { codigo: "INTEI", nombre: "Integración de Saberes", semestre: 9, requisitos: [] },
+  { codigo: "INTEI", nombre: "Proyecto para el empleo y el emprendimiento", semestre: 9, requisitos: [] },
   { codigo: "OPT1", nombre: "Optativo de Profundización I", semestre: 9, requisitos: [] },
   
   // X SEM
   { codigo: "IN1033C", nombre: "Ingeniería Económica", semestre: 10, requisitos: [] },
   { codigo: "IN1122C", nombre: "Impacto Ambiental en Ingeniería Civil", semestre: 10, requisitos: [] },
-  { codigo: "INTEII", nombre: "Integración de Saberes II", semestre: 10, requisitos: [] },
+  { codigo: "INTEII", nombre: "Inserccion laboral", semestre: 10, requisitos: [] },
   { codigo: "OPT2", nombre: "Optativo de Profundización II", semestre: 10, requisitos: [] },
   { codigo: "OPT3", nombre: "Optativo de Profundización III", semestre: 10, requisitos: [] },
   
